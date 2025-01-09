@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '../types/types';
 import HomeScreen from '../screens/main/HomeScreen';
 import { Home, PiggyBank, Receipt, User } from 'lucide-react-native';
-import GoalsScreen from '@/screens/main/GoalsScreen';
 import ProfileScreen from '@/screens/main/ProfileScreen';
 import TransactionNavigator from './TransactionNavigator';
+import GoalsNavigator from './GoalsNavigator';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -39,7 +39,7 @@ export default function MainNavigator() {
       />
       <Tab.Screen
         name="Goals"
-        component={GoalsScreen}
+        component={GoalsNavigator}
         options={{
           title: 'Metas',
           tabBarIcon: ({ color, size }) => <PiggyBank color={color} size={size} />,

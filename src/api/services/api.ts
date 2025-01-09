@@ -57,7 +57,7 @@ export async function request<T>(
     }
 
     // Mostrar toast en caso de éxito
-    if (json.message) {
+    if (json.message && method !== 'GET') {
       Toast.show({
         type: 'success',
         text1: 'Éxito',
