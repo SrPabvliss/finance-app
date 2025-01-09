@@ -15,4 +15,5 @@ export type MainTabParamList = {
   Transactions: undefined;
   Goals: undefined;
   Profile: undefined;
+  PaymentMethods: undefined;
 };

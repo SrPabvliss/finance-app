@@ -1,10 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '../types/types';
 import HomeScreen from '../screens/main/HomeScreen';
-import { Home, PiggyBank, Receipt, User } from 'lucide-react-native';
 import ProfileScreen from '@/screens/main/ProfileScreen';
 import TransactionNavigator from './TransactionNavigator';
 import GoalsNavigator from './GoalsNavigator';
+import PaymentMethodsNavigator from './PaymentMethodsNavigator';
+import { Home, PiggyBank, Receipt, User, Wallet } from 'lucide-react-native';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -43,6 +44,14 @@ export default function MainNavigator() {
         options={{
           title: 'Metas',
           tabBarIcon: ({ color, size }) => <PiggyBank color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="PaymentMethods"
+        component={PaymentMethodsNavigator}
+        options={{
+          title: 'Métodos de Pago',
+          tabBarIcon: ({ color, size }) => <Wallet color={color} size={size} />,
         }}
       />
       <Tab.Screen

@@ -5,6 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TransactionStackParamList } from '@/types/navigation';
 import Button from '@/components/ui/Button';
 import { transactionsApi } from '@/api/services/transactions-api';
+import { paymentMethodsApi } from '@/api/services/payment-methods-api';
 import Loading from '@/components/ui/LoadingComponent';
 
 type Props = NativeStackScreenProps<TransactionStackParamList, 'TransactionDetail'>;
@@ -13,11 +14,12 @@ export default function TransactionDetailScreen({ route, navigation }: Props) {
   const { transaction } = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(route.params.transaction);
+  const [paymentMethod, setPaymentMethod] = useState<any>(null);
 
   const handleEdit = () => {
     navigation.navigate('TransactionForm', {
       mode: 'edit',
-      transaction,
+      transaction: currentTransaction,
     });
   };
 
@@ -47,6 +49,11 @@ export default function TransactionDetailScreen({ route, navigation }: Props) {
       setIsLoading(true);
       const updatedTransaction = await transactionsApi.getById(currentTransaction.id);
       setCurrentTransaction(updatedTransaction);
+
+      if (updatedTransaction.payment_method_id) {
+        const method = await paymentMethodsApi.getById(updatedTransaction.payment_method_id);
+        setPaymentMethod(method);
+      }
     } catch (error) {
       console.error('Error loading transaction:', error);
     } finally {
@@ -60,7 +67,7 @@ export default function TransactionDetailScreen({ route, navigation }: Props) {
     });
 
     return unsubscribe;
-  }, []);
+  }, [navigation]);
 
   if (isLoading) {
     return <Loading />;
@@ -78,6 +85,16 @@ export default function TransactionDetailScreen({ route, navigation }: Props) {
             <Text className="text-base font-semibold text-gray-700">Categoría</Text>
             <Text className="text-base text-gray-600">{currentTransaction.category}</Text>
           </View>
+
+          {paymentMethod && (
+            <View className="space-y-2">
+              <Text className="text-base font-semibold text-gray-700">Método de pago</Text>
+              <Text className="text-base text-gray-600">
+                {paymentMethod.name}
+                {paymentMethod.last_four_digits && ` (**** ${paymentMethod.last_four_digits})`}
+              </Text>
+            </View>
+          )}
 
           {currentTransaction.description && (
             <View className="space-y-2">
