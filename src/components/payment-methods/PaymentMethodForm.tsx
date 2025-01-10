@@ -15,6 +15,7 @@ interface PaymentMethodFormProps {
     type: 'CASH' | 'CARD' | 'BANK_ACCOUNT';
     last_four_digits?: string;
   }) => void;
+  onCancel?: () => void;
   isLoading?: boolean;
 }
 
@@ -22,6 +23,7 @@ export default function PaymentMethodForm({
   initialValues,
   onSubmit,
   isLoading,
+  onCancel,
 }: PaymentMethodFormProps) {
   const [values, setValues] = useState({
     name: initialValues?.name || '',

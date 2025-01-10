@@ -1,6 +1,7 @@
+// src/components/payment-methods/PaymentMethodCard.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { CreditCard, Landmark, Wallet } from 'lucide-react-native';
+import { CreditCard, Landmark, Wallet, Trash2 } from 'lucide-react-native';
 
 const PAYMENT_METHOD_ICONS = {
   CASH: Wallet,
@@ -14,6 +15,7 @@ interface PaymentMethodCardProps {
   type: 'CASH' | 'CARD' | 'BANK_ACCOUNT';
   last_four_digits?: string | null;
   onPress?: () => void;
+  onDeletePress?: () => void;
 }
 
 export default function PaymentMethodCard({
@@ -21,6 +23,7 @@ export default function PaymentMethodCard({
   type,
   last_four_digits,
   onPress,
+  onDeletePress,
 }: PaymentMethodCardProps) {
   const Icon = PAYMENT_METHOD_ICONS[type];
 
@@ -41,6 +44,18 @@ export default function PaymentMethodCard({
           )}
         </View>
       </View>
+
+      {onDeletePress && (
+        <TouchableOpacity
+          onPress={e => {
+            e.stopPropagation();
+            onDeletePress();
+          }}
+          className="rounded-full bg-red-100 p-2"
+        >
+          <Trash2 size={20} color="#ef4444" />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 }
