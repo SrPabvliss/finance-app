@@ -10,6 +10,7 @@ interface FriendSelectorProps {
   selectedFriendId?: number;
   onToggle: () => void;
   onFriendSelect: (friendId: number) => void;
+  checkboxMessage?: string;
 }
 
 export default function FriendSelector({
@@ -17,6 +18,7 @@ export default function FriendSelector({
   selectedFriendId,
   onToggle,
   onFriendSelect,
+  checkboxMessage = 'Compartir Transacción',
 }: FriendSelectorProps) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +51,7 @@ export default function FriendSelector({
         >
           <View className={`h-3 w-3 rounded-sm ${enabled ? 'bg-white' : 'bg-transparent'}`} />
         </View>
-        <Text className="text-base text-gray-700">Compartir transacción</Text>
+        <Text className="text-base text-gray-700">{checkboxMessage}</Text>
       </TouchableOpacity>
 
       {enabled && (

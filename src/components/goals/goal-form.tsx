@@ -130,6 +130,7 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
           })
         }
         onFriendSelect={friendId => setValues({ ...values, shared_user_id: friendId })}
+        checkboxMessage="Compartir meta"
       />
 
       <Button title="Guardar" onPress={handleSubmit} isLoading={isLoading} />

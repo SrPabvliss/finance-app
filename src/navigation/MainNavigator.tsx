@@ -5,7 +5,8 @@ import HomeScreen from '../screens/main/HomeScreen';
 import ProfileScreen from '@/screens/main/ProfileScreen';
 import TransactionNavigator from './TransactionNavigator';
 import GoalsNavigator from './GoalsNavigator';
-import { Home, PiggyBank, Receipt, User } from 'lucide-react-native';
+import { Home, PiggyBank, Receipt, User, Wallet } from 'lucide-react-native';
+import DebtNavigator from './DebtNavigator';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -44,6 +45,14 @@ export default function MainNavigator() {
         options={{
           title: 'Metas',
           tabBarIcon: ({ color, size }) => <PiggyBank color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="Debts"
+        component={DebtNavigator}
+        options={{
+          title: 'Deudas',
+          tabBarIcon: ({ color, size }) => <Wallet color={color} size={size} />,
         }}
       />
       <Tab.Screen
