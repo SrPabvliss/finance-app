@@ -6,9 +6,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { GoalsStackParamList } from '@/navigation/GoalsNavigator';
 import { useAuth } from '@/contexts/AuthContext';
 import { goalsApi } from '@/api/services/goals-api';
+import { friendsApi } from '@/api/services/friends-api';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Loading from '@/components/ui/LoadingComponent';
+import { Users } from 'lucide-react-native';
 
 type Props = NativeStackScreenProps<GoalsStackParamList, 'GoalDetail'>;
 
@@ -19,6 +21,7 @@ export default function GoalDetailScreen({ route, navigation }: Props) {
   const [currentGoal, setCurrentGoal] = useState(goal);
   const [progressAmount, setProgressAmount] = useState('');
   const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
+  const [sharedUser, setSharedUser] = useState<any>(null);
 
   const handleEdit = () => {
     navigation.navigate('GoalFormScreen', {
@@ -87,6 +90,24 @@ export default function GoalDetailScreen({ route, navigation }: Props) {
 
     return unsubscribe;
   }, [navigation]);
+
+  const loadSharedUserInfo = async () => {
+    if (currentGoal.shared_user_id) {
+      try {
+        const friends = await friendsApi.getByUser(user!.id);
+        const friend = friends.find(f => f.friend.id === currentGoal.shared_user_id);
+        if (friend) {
+          setSharedUser(friend.friend);
+        }
+      } catch (error) {
+        console.error('Error loading shared user info:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadSharedUserInfo();
+  }, [currentGoal]);
 
   if (isLoading) {
     return <Loading />;
@@ -160,6 +181,20 @@ export default function GoalDetailScreen({ route, navigation }: Props) {
               />
             </View>
           </View>
+
+          {/* Sección de compartición */}
+          {sharedUser && (
+            <View className="space-y-2">
+              <Text className="text-base font-medium text-gray-700">Compartida con</Text>
+              <View className="rounded-lg bg-purple-50 p-4 flex-row items-center space-x-2">
+                <Users size={20} color="#9333ea" />
+                <View>
+                  <Text className="text-base text-purple-600">{sharedUser.name}</Text>
+                  <Text className="text-sm text-gray-600">@{sharedUser.username}</Text>
+                </View>
+              </View>
+            </View>
+          )}
 
           {/* Actions */}
           <View className="flex-row space-x-4">

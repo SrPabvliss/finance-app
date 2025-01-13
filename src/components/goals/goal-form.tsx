@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import FriendSelector from '@/components/friends/FriendSelectorComponent';
 
 interface GoalFormProps {
   initialValues?: Partial<{
@@ -9,12 +10,14 @@ interface GoalFormProps {
     target_amount: string;
     current_amount: string;
     end_date: string;
+    shared_user_id?: number | null;
   }>;
   onSubmit: (values: {
     name: string;
     target_amount: string;
     current_amount?: string;
     end_date: string;
+    shared_user_id?: number;
   }) => void;
   isLoading?: boolean;
 }
@@ -25,6 +28,8 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
     target_amount: initialValues?.target_amount || '',
     current_amount: initialValues?.current_amount || '',
     end_date: initialValues?.end_date || '',
+    is_shared: !!initialValues?.shared_user_id,
+    shared_user_id: initialValues?.shared_user_id,
   });
 
   const [errors, setErrors] = React.useState<{
@@ -46,7 +51,6 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
       newErrors.target_amount = 'El monto objetivo debe ser un número positivo';
     }
 
-    // Validar formato de fecha YYYY-MM-DD
     const dateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
     if (!values.end_date) {
       newErrors.end_date = 'La fecha límite es requerida';
@@ -60,7 +64,11 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
 
   const handleSubmit = () => {
     if (validateForm()) {
-      onSubmit(values);
+      onSubmit({
+        ...values,
+        shared_user_id:
+          values.is_shared && values.shared_user_id !== null ? values.shared_user_id : undefined,
+      });
     }
   };
 
@@ -68,7 +76,9 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
     if (initialValues?.end_date) {
       setValues(prev => ({
         ...prev,
-        end_date: new Date(initialValues.end_date!).toISOString().split('T')[0],
+        end_date: initialValues.end_date
+          ? new Date(initialValues.end_date).toISOString().split('T')[0]
+          : '',
       }));
     }
   }, [initialValues]);
@@ -107,6 +117,19 @@ export function GoalForm({ initialValues, onSubmit, isLoading }: GoalFormProps) 
         }}
         placeholder="YYYY-MM-DD"
         error={errors.end_date}
+      />
+
+      <FriendSelector
+        enabled={values.is_shared}
+        selectedFriendId={values.shared_user_id ?? undefined}
+        onToggle={() =>
+          setValues({
+            ...values,
+            is_shared: !values.is_shared,
+            shared_user_id: !values.is_shared ? values.shared_user_id : undefined,
+          })
+        }
+        onFriendSelect={friendId => setValues({ ...values, shared_user_id: friendId })}
       />
 
       <Button title="Guardar" onPress={handleSubmit} isLoading={isLoading} />

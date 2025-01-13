@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { GoalsStackParamList } from '@/navigation/GoalsNavigator';
-import { useAuth } from '@/contexts/AuthContext';
 import { goalsApi } from '@/api/services/goals-api';
 import { GoalForm } from '@/components/goals/goal-form';
-
+import { useAuth } from '@/contexts/AuthContext';
+import { GoalsStackParamList } from '@/navigation/GoalsNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
+import { SafeAreaView, ScrollView } from 'react-native';
 type Props = NativeStackScreenProps<GoalsStackParamList, 'GoalFormScreen'>;
 
 export default function GoalFormScreen({ route, navigation }: Props) {
@@ -19,6 +17,7 @@ export default function GoalFormScreen({ route, navigation }: Props) {
     target_amount: string;
     current_amount?: string;
     end_date: string;
+    shared_user_id?: number;
   }) => {
     if (!user) return;
 
@@ -47,7 +46,7 @@ export default function GoalFormScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 p-4">
-        <GoalForm initialValues={editingGoal} onSubmit={handleSubmit} isLoading={isLoading} />
+        <GoalForm initialValues={editingGoal!} onSubmit={handleSubmit} isLoading={isLoading} />
       </ScrollView>
     </SafeAreaView>
   );

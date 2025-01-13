@@ -1,7 +1,8 @@
-import { Transaction, TransactionFilters } from '@/types/transactions';
+import { ScheduledTransaction, Transaction, TransactionFilters } from '@/types/transactions';
 import { request } from './api';
 
 export const transactionsApi = {
+  // Endpoints existentes actualizados
   getAll: () => request<Transaction[]>('/transactions'),
 
   getById: (id: number) => request<Transaction>(`/transactions/${id}`),
@@ -33,4 +34,31 @@ export const transactionsApi = {
     }),
 
   delete: (id: number) => request<{ deleted: boolean }>(`/transactions/${id}`, 'DELETE'),
+
+  // Nuevos endpoints para transacciones programadas
+  getScheduled: () => request<ScheduledTransaction[]>('/scheduled-transactions'),
+
+  getScheduledById: (id: number) => request<ScheduledTransaction>(`/scheduled-transactions/${id}`),
+
+  getScheduledByUser: (userId: number) =>
+    request<ScheduledTransaction[]>(`/users/${userId}/scheduled-transactions`),
+
+  createScheduled: (data: Omit<ScheduledTransaction, 'id'>) =>
+    request<ScheduledTransaction>('/scheduled-transactions', 'POST', {
+      ...data,
+      amount: Number(data.amount),
+    }),
+
+  updateScheduled: (id: number, data: Partial<ScheduledTransaction>) =>
+    request<ScheduledTransaction>(`/scheduled-transactions/${id}`, 'PATCH', {
+      ...data,
+      amount: data.amount ? Number(data.amount) : undefined,
+    }),
+
+  deleteScheduled: (id: number) =>
+    request<{ deleted: boolean }>(`/scheduled-transactions/${id}`, 'DELETE'),
+
+  // Endpoint para ejecutar manualmente transacciones programadas pendientes
+  executePendingScheduled: () =>
+    request<{ executed_count: number }>('/scheduled-transactions/pending', 'POST'),
 };
