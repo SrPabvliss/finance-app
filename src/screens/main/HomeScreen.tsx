@@ -1,25 +1,17 @@
-import Button from '@/components/ui/Button';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { View, Text } from 'react-native';
+// src/screens/main/DashboardScreen.tsx
+
+import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DashboardComponent from '@/components/dashboard/DashboardComponent';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainTabParamList } from '@/types/types';
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
-  const handleLogout = () => {
-    // Implementar lógica de cerrar sesión
-    // limpiar las tokens de autenticación creadas con async storage
+type Props = NativeStackScreenProps<MainTabParamList, 'Home'>;
 
-    AsyncStorage.removeItem('@user');
-    AsyncStorage.removeItem('@token');
-  };
-
+export default function DashboardScreen({ navigation }: Props) {
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 items-center justify-center p-4">
-        <Text className="text-2xl font-bold">Dashboard</Text>
-        <Button title="Cerrar sesión" onPress={handleLogout} />
-      </View>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <DashboardComponent />
     </SafeAreaView>
   );
 }

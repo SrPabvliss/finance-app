@@ -1,5 +1,6 @@
 import { ScheduledTransaction, Transaction, TransactionFilters } from '@/types/transactions';
 import { request } from './api';
+import { CategoryTotal, MonthlyBalance, MonthlyTrend } from '@/types/dashboard';
 
 export const transactionsApi = {
   // Endpoints existentes actualizados
@@ -61,4 +62,14 @@ export const transactionsApi = {
   // Endpoint para ejecutar manualmente transacciones programadas pendientes
   executePendingScheduled: () =>
     request<{ executed_count: number }>('/scheduled-transactions/pending', 'POST'),
+
+  getMonthlyBalance: (userId: number, month: string) =>
+    request<MonthlyBalance>(`/users/${userId}/balance/monthly?month=${month}`),
+
+  getCategoryTotals: (userId: number, startDate: string, endDate: string) =>
+    request<CategoryTotal[]>(
+      `/users/${userId}/totals/category?startDate=${startDate}&endDate=${endDate}`
+    ),
+
+  getMonthlyTrends: (userId: number) => request<MonthlyTrend[]>(`/users/${userId}/trends/monthly`),
 };
